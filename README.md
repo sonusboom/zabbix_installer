@@ -4,9 +4,15 @@ for testing and/or small scale production purposes.
 
 ### Usage
  
-The script allows you to change the MalTrail admin password during installation. It also sets the recommended cronjobs for the MalTrail server and sensor services.
+The script is menu based and will install and configure Docker as a swarm (so we can use secrets), set up the required volume directories and environment files for Zabbix containers and start the containers as a stack. 
 
-The following docker images are deployed:
+Here are the script installation tasks:
+
+* Install Docker
+* Setup Zabbix
+* Start Zabbix Stack
+
+The following docker images are deployed via the included docker-compose.yml:
 
 * MariaDB-Server
 * Zabbix-Agent
