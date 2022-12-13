@@ -1,5 +1,5 @@
 # Intro
-`zabbix_installer.sh` is a bash script designed to quickly install the docker version of Zabbix (https://www.zabbix.com) 
+`zabbix_install.sh` is a bash script designed to quickly install the docker version of Zabbix (https://www.zabbix.com) 
 for testing and/or small scale production purposes.
 
 ### Usage
@@ -33,8 +33,8 @@ git clone https://github.com/sonusboom/zabbix_installer.git
     
 **To Run:**
 ```
-chmod +x zabbix_installer.sh`
-sudo ./zabbix_installer.sh
+chmod +x zabbix_install.sh`
+sudo ./zabbix_install.sh
 ```
 
 ### Important Notice
