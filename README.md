@@ -2,7 +2,7 @@
 `zabbix_installer.sh` is a bash script designed to quickly install the docker version of Zabbix (https://www.zabbix.com) 
 for testing and/or small scale production purposes.
 
-### Additional functions
+### Usage
  
 The script allows you to change the MalTrail admin password during installation. It also sets the recommended cronjobs for the MalTrail server and sensor services.
 
