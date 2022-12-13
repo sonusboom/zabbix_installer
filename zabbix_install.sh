@@ -30,14 +30,12 @@ function install_docker () {
 # Install Docker and run hello-world test and then remove hello-world test
   apt-get update
   apt-get install docker-ce docker-ce-cli containerd.io docker-compose-plugin
-  docker run hello-world
   sleep 3
-  docker rm $(docker ps -a -q)
 
 # Intialize docker swarm so we can use secrets without using text files
 
   docker swarm init
-  sleep 3  
+  sleep 10  
 }
 
 function setup_zabbix () {
@@ -105,6 +103,15 @@ function start_zabbix () {
    cp docker-compose.yml /zabbix/compose
    docker stack deploy -c /zabbix/compose/docker-compose.yml zabbix
    sleep 5
+   echo ""
+   echo "Zabbix stack has been started...please wait a few minutes before logging on..."
+   echo ""
+   echo "Go to http://$(hostname -I |awk '$1 {print $1}'):8080"
+   echo ""
+   echo "Username: Admin"
+   echo "Password: zabbix"
+   echo ""
+   sleep 10
 
 }
 
@@ -117,7 +124,7 @@ do
  echo " "
  echo " 1. Install Docker"
  echo " 2. Setup Zabbix"
- echo " 3. Start Zabbix"
+ echo " 3. Start Zabbix Stack"
  echo " q. Quit"
  echo " "
  read -p " Enter your choice: " m_choice
