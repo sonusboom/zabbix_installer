@@ -1,6 +1,6 @@
 # Intro
 `zabbix_installer.sh` is a bash script designed to quickly install the docker version of Zabbix (https://www.zabbix.com) 
-for testing and/or production purposes. It follows the best practices outlined in the MalTrail documentation.
+for testing and/or small scale production purposes.
 
 ### Additional functions
  
@@ -8,19 +8,19 @@ The script allows you to change the MalTrail admin password during installation.
 
 ### Compatibility
 
-Currently this script only supports Ubuntu.
+This script was developed and tested on Ubuntu 22.04 LTS.
 
 ### Installation
 
-You can download maltrail_installer.sh by cloning this git repository:
+You can download zabbix_installer.sh by cloning this git repository:
 ```
-git clone https://github.com/sonusboom/maltrail_installer.git
+git clone https://github.com/sonusboom/zabbix_installer.git
 ```
     
 **To Run:**
 ```
-chmod +x maltrail_installer.sh`
-sudo ./maltrail_installer.sh
+chmod +x zabbix_installer.sh`
+sudo ./zabbix_installer.sh
 ```
 
 ### Important Notice
