@@ -6,6 +6,14 @@ for testing and/or small scale production purposes.
  
 The script allows you to change the MalTrail admin password during installation. It also sets the recommended cronjobs for the MalTrail server and sensor services.
 
+The following docker images are deployed:
+
+* MariaDB-Server
+* Zabbix-Agent
+* Zabbix-Java-Gateway
+* Zabbix-Server
+* Zabbix-Web-Nginx-MySQL
+
 ### Compatibility
 
 This script was developed and tested on Ubuntu 22.04 LTS.
