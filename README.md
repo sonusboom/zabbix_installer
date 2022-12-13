@@ -38,4 +38,13 @@ sudo ./zabbix_installer.sh
 ```
 
 ### Important Notice
-This script does not set any interfaces to promiscuous mode. You will need to make sure that this is set up prior to installation of the software. I am open to suggestions and improvement. Thanks!
+After you have installed Zabbix, log onto the server and do the following:
+
+1. Click on "Configuration" and then "Hosts"
+2. Click on "Zabbix server" and make the following change on "Interfaces"
+   - DNS name ```zabbix-agent```
+   - "Connect to" click ```DNS```
+   - Click ```Update```
+3. These changes will allow the Zabbix server to connect to the Zabbix agent  
+
+I am open to suggestions and improvement. Thanks!
