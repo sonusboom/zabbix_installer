@@ -28,7 +28,7 @@ This script was developed and tested on Ubuntu 22.04 LTS.
 
 ### Installation
 
-You can download zabbix_installer.sh by cloning this git repository:
+You can download "zabbix_install.sh" by cloning this git repository:
 ```
 git clone https://github.com/sonusboom/zabbix_installer.git
 ```
