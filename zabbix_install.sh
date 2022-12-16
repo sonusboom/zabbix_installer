@@ -44,22 +44,25 @@ function setup_zabbix () {
   echo ""
   echo "Creating required directories for zabbix volumes..."
   echo ""
-  mkdir -p -v /zabbix/zbx_env/usr/lib/zabbix/{alertscripts,externalscripts}
-  mkdir -p -v /zabbix/zbx_env/usr/share/zabbix/modules
-  mkdir -p -v /zabbix/zbx_env/var/lib/zabbix/{export,modules,enc,ssh_keys,mibs,snmptraps}
-  mkdir -p -v /zabbix/zbx_env/var/lib/zabbix/ssl/{certs,keys,ssl_ca}
-  mkdir -p -v /zabbix/zbx_env/var/lib/mysql
-  mkdir -p -v /zabbix/zbx_env/etc/zabbix/zabbix_agentd.d
-  mkdir -p -v /zabbix/zbx_env/etc/ssl/nginx
-  mkdir -p -v /zabbix/env_vars
-  mkdir -p -v /zabbix/{compose,scripts}
+  mkdir -p /zabbix/zbx_env/usr/lib/zabbix/{alertscripts,externalscripts}
+  mkdir -p /zabbix/zbx_env/usr/share/zabbix/modules
+  mkdir -p /zabbix/zbx_env/var/lib/zabbix/{export,modules,enc,ssh_keys,mibs,snmptraps}
+  mkdir -p /zabbix/zbx_env/var/lib/zabbix/ssl/{certs,keys,ssl_ca}
+  mkdir -p /zabbix/zbx_env/var/lib/mysql
+  mkdir -p /zabbix/zbx_env/etc/zabbix/zabbix_agentd.d
+  mkdir -p /zabbix/zbx_env/etc/ssl/{grafana,nginx}
+  mkdir -p /zabbix/env_vars
+  mkdir -p /zabbix/{compose,scripts}
+  mkdir -p /zabbix/zbx_env/grafana/{config,plugins}
+  chmod 777 /zabbix/zbx_env/grafana/plugins
   sleep 3
 
 # Create files needed by zabbix environment
   echo ""
   echo "Creating environment files..."
   echo ""
-  touch /zabbix/env_vars/{.env_java,.env_web,.env_db_mysql,.env_srv,.env_agent}
+  touch /zabbix/env_vars/{.env_java,.env_web,.env_db_mysql,.env_srv,.env_agent,.env_grafana}
+  touch /zabbix/zbx_env/grafana/config/.grafana.ini
 
  # Add variable to set zabbix-server hostname and port to .env_srv
   echo ""
@@ -72,26 +75,20 @@ EOF
 
   sleep 3
 
-# Configure secrets for use by Zabbix Server for MariaDB connections
-   
-   # Create the MYSQL_USER account this is typically "zabbix"
-   read -p "Enter new username for MYSQL_USER: " MYSQL_USER
-   echo ""
-   # Create the MYSQL_PASSWORD for the MYSQL_USER
-   read -p "Enter password for MYSQL_PASSWORD: " MYSQL_PASSWORD
-   echo ""
-   # Create the MYSQL_ROOT_PASSWORD
-   read -p "Enter password MYSQL_ROOT_PASSWORD: " MYSQL_ROOT_PASSWORD
+cat > /zabbix/env_vars/.env_grafana <<-EOF
+GF_INSTALL_PLUGINS=alexanderzobnin-zabbix-app
+EOF
 
+  sleep 3
+
+# Configure random secrets for use by Zabbix Server for MariaDB connections
+   
    echo ""
    echo "Creating docker secrets..."
    echo ""
-   echo "$MYSQL_USER" | docker secret create MYSQL_USER -
-   echo "$MYSQL_PASSWORD" | docker secret create MYSQL_PASSWORD -
-   echo "$MYSQL_ROOT_PASSWORD" | docker secret create MYSQL_ROOT_PASSWORD -
-   echo ""
-   echo "Secrets have been created..."
-   docker secret ls
+   printf "zabbix" | docker secret create MYSQL_USER -  > /dev/null 2>&1
+   openssl rand -base64 16 | docker secret create MYSQL_PASSWORD -  > /dev/null 2>&1
+   openssl rand -base64 24 | docker secret create MYSQL_ROOT_PASSWORD -  > /dev/null 2>&1
    sleep 3
 
 }
@@ -111,7 +108,52 @@ function start_zabbix () {
    echo "Username: Admin"
    echo "Password: zabbix"
    echo ""
-   sleep 10
+   read -r -s -p $'Press enter to continue...'
+
+}
+
+function clear_zabbix () {
+
+   # stop zabbix stack and remove
+   echo '####################################################'
+   echo 'Removing Zabbix stack...'
+   echo '####################################################'
+   docker stack rm zabbix
+
+   # stop all running containers
+   echo '####################################################'
+   echo 'Stopping running containers...'
+   echo '####################################################'
+   docker stop $(docker ps -aq)
+
+   # remove all stopped containers
+   echo '####################################################'
+   echo 'Removing containers ..'
+   echo '####################################################'
+   docker rm $(docker ps -aq)
+
+   # remove all images
+   echo '####################################################'
+   echo 'Removing images ...'
+   echo '####################################################'
+   docker rmi $(docker images -q)
+
+   # remove all stray volumes if any
+   echo '####################################################'
+   echo 'Removing docker container volumes...'
+   echo '####################################################'
+   docker volume rm $(docker volume ls -q)
+
+   # clear all secrets
+   echo '####################################################'
+   echo 'Removing docker secrets...'
+   echo '####################################################'
+   docker secret rm $(sudo docker secret ls | awk '$2 {print $2}'|awk 'NR!=1')
+   echo ""
+   echo "Zabbix stack has been removed..."
+   echo ""
+   read -r -s -p $'Press enter to continue...'
+
 
 }
 
@@ -125,6 +167,7 @@ do
  echo " 1. Install Docker"
  echo " 2. Setup Zabbix"
  echo " 3. Start Zabbix Stack"
+ echo " 4. Clear Zabbix Stack"
  echo " q. Quit"
  echo " "
  read -p " Enter your choice: " m_choice
@@ -135,6 +178,8 @@ do
 	setup_zabbix
  elif [ "$m_choice" = "3" ]; then
 	start_zabbix
+ elif [ "$m_choice" = "4" ]; then
+	clear_zabbix
  elif [ "$m_choice" = "q" ]; then
 	clear
 	break

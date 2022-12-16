@@ -180,6 +180,30 @@ services:
       com.zabbix.component: 'java-gateway'
       com.zabbix.os: 'alpine'
 
+  grafana-server:
+    image: grafana/grafana-oss
+    ports:
+      - "3000:3000"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      - /zabbix/zbx_env/etc/ssl/grafana:/etc/ssl/grafana:ro
+      - /zabbix/zbx_env/grafana/config/.grafana.ini:/etc/grafana/grafana.ini
+      - /zabbix/zbx_env/grafana/plugins:/var/lib/grafana/plugins:rw  
+      - grafana-storage:/var/lib/grafana:rw
+    env_file:
+      - /zabbix/env_vars/.env_grafana
+    ulimits:
+      nproc: 65535
+      nofile:
+        soft: 20000
+        hard: 40000
+    networks:
+      zbx_net_backend:
+        aliases:
+          - zabbix-grafana
+      zbx_net_frontend:
+
 networks:
   zbx_net_frontend:
     driver: overlay
@@ -201,6 +225,7 @@ networks:
 
 volumes:
   snmptraps:
+  grafana-storage:
 
 secrets:
   MYSQL_USER:
@@ -208,6 +233,4 @@ secrets:
   MYSQL_PASSWORD:
     external: true
   MYSQL_ROOT_PASSWORD:
-    external: true
-  MARIADB_ROOT_PASSWORD:
     external: true
