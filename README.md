@@ -10,10 +10,12 @@ Here are the script installation tasks:
 
 * Install Docker
 * Setup Zabbix
+* Setup Grafana
 * Start Zabbix Stack
 
 The following docker images are deployed via the included docker-compose.yml:
 
+* Grafana-oss
 * MariaDB-Server
 * Zabbix-Agent
 * Zabbix-Java-Gateway
