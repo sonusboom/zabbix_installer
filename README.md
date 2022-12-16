@@ -9,8 +9,8 @@ The script is menu based and will install and configure Docker as a swarm (so we
 Here are the script installation tasks:
 
 * Install Docker
-* Setup Zabbix
 * Setup Grafana
+* Setup Zabbix
 * Start Zabbix Stack
 
 The following docker images are deployed via the included docker-compose.yml:
